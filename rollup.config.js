@@ -4,8 +4,18 @@ import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import css from 'rollup-plugin-css-only';
+import alias from "@rollup/plugin-alias";
 
 const production = !process.env.ROLLUP_WATCH;
+// configure aliases for absolute imports
+const aliases = alias({
+	resolve: [".svelte", ".js"], //optional, by default this will just look for .js files or folders
+	entries: [
+	  { find: "components", replacement: "src/components" },
+	  { find: "views", replacement: "src/views" },
+	  { find: "assets", replacement: "src/assets" },
+	],
+  });
 
 function serve() {
 	let server;
@@ -65,6 +75,8 @@ export default {
 		// Watch the `public` directory and refresh the
 		// browser on changes when not in production
 		!production && livereload('public'),
+
+		aliases,
 
 		// If we're building for production (npm run build
 		// instead of npm run dev), minify
